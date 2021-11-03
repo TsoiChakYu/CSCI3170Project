@@ -18,26 +18,34 @@ public class LibraryInquirySystem {
         
         User user;
         Scanner scan = new Scanner(System.in);
-        int choice = 0;
-        printmainMenu();
+        int mainChoice = 0;
+        int userChoice = 0;
+        boolean returnMainMenu = false;
         
+        printmainMenu();
         while (scan.hasNext()){
-            choice = scan.nextInt();
-            if(choice == 1){
+            mainChoice = scan.nextInt();            //no input validation
+            if(mainChoice == 1){
             user = new Administrator();
-            }else if(choice == 2){
+            }else if(mainChoice == 2){
                  user = new LibraryUser();
-            }else if(choice == 3){
+            }else if(mainChoice == 3){
                  user = new Librarian();
-            }else if (choice == 4) {
+            }else if (mainChoice == 4) {
                 break;
             } else{ 
                 System.out.println("Invalid input!");
                 printmainMenu();
                 continue;
             }
-            System.out.println(user.toString());
-            user.printMenu();
+            
+            do {                
+                user.printMenu();
+                userChoice = scan.nextInt();                //no input validation
+                returnMainMenu = user.performOperation(userChoice);
+            } while (!returnMainMenu);
+            System.out.println("");
+            printmainMenu();
         }
     }
     
@@ -49,6 +57,7 @@ public class LibraryInquirySystem {
         System.out.println("1. Operations for Administrator");
         System.out.println("2. Operations for Library User");
         System.out.println("3. Operations for Librarian");
+        System.out.println("4. Exit this program");
         System.out.print("Enter Your Choice: ");
     }
     
@@ -56,16 +65,11 @@ public class LibraryInquirySystem {
 
 abstract class User{
     abstract void printMenu();  //print different menu for the user
-    abstract void performOperation(int i);
+    abstract boolean performOperation(int choice);
     public abstract String toString();
 }
 
-class Administrator 
-        extends User{
-    
-    Administrator(){
-        
-    }
+class Administrator extends User{
 
     @Override
     void printMenu(){
@@ -81,8 +85,47 @@ class Administrator
     }
     
     @Override
-    void performOperation(int i){
-        System.out.println(this.toString()+i);
+    boolean performOperation(int choice){
+        switch(choice){
+            case 1:
+                createTable();
+                break;
+            case 2:
+                deleteTable();
+                break;
+            case 3:
+                loadData();
+                break;
+            case 4:
+                showRecords();
+                break;
+            case 5:
+                return true;
+            default:
+                System.out.println("Invalid Input");
+        }
+        
+        return false;
+    }
+    
+    private void createTable(){
+        System.out.println("createTable()");
+        //TODO
+    }
+    
+    private void deleteTable(){
+        System.out.println("deleteTable()");
+        //TODO
+    }
+    
+    private void loadData(){
+        System.out.println("loadData()");
+        //TODO
+    }
+    
+    private void showRecords(){
+        System.out.println("showRecords()");
+        //TODO
     }
     
     @Override
@@ -92,10 +135,6 @@ class Administrator
 }
 
 class LibraryUser extends User{
-    
-    LibraryUser(){
-        
-    }
     
     @Override
     void printMenu(){
@@ -109,8 +148,31 @@ class LibraryUser extends User{
     }
     
     @Override
-    void performOperation(int i){
-        System.out.println(this.toString()+i);
+    boolean performOperation(int choice){
+        switch(choice){
+            case 1:
+                searchBooks();
+                break;
+            case 2:
+                showLoanRecords();
+                break;
+            case 3:
+                return true;
+            default:
+                System.out.println("Invalid Input");
+        }
+        
+        return false;
+    }
+    
+    private void searchBooks(){
+        System.out.println("searchBooks()");
+        //TODO
+    }
+    
+    private void showLoanRecords(){
+        System.out.println("showLoanRecords()");
+        //TODO
     }
     
     @Override
@@ -120,9 +182,6 @@ class LibraryUser extends User{
 }
 
 class Librarian extends User{
-
-    Librarian() {
-    }
     
     @Override
     void printMenu(){
@@ -131,14 +190,45 @@ class Librarian extends User{
         System.out.println("What kinds of operations would you like to perform?");
         System.out.println("1. Book Borrowing");
         System.out.println("2. Book Returning");
-        System.out.println("3. Book Returning");
-        System.out.println("4. List all un-returned book copies which are cheched-out within a period");
+        System.out.println("3. List all un-returned book copies which are cheched-out within a period");
+        System.out.println("4. Return to the main menu");
         System.out.print("Enter Your Choice: ");
     }
     
     @Override
-    void performOperation(int i){
-        System.out.println(this.toString()+i);
+    boolean performOperation(int choice){
+        switch(choice){
+            case 1:
+                borrowBook();
+                break;
+            case 2:
+                returnBook();
+                break;
+            case 3:
+                listUnreturnBook();
+                break;
+            case 4:
+                return true;
+            default:
+                System.out.println("Invalid Input");
+        }
+       
+        return false;
+    }
+    
+    private void borrowBook(){
+        System.out.println("borrowBook()");
+        //TODO
+    }
+    
+    private void returnBook(){
+        System.out.println("returnBook()");
+        //TODO
+    }
+    
+    private void listUnreturnBook(){
+        System.out.println("listUnreturnBook()");
+        //TODO
     }
     
     @Override
