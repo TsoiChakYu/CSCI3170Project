@@ -19,7 +19,7 @@ public class LibraryInquirySystem {
     private static final String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group60";
     private static final String dbUserName = "Group60";
     private static final String dbPassword = "CSCI3170";
-    
+    private static Connection conn = null;
     public static void main(String[] args) {
         // TODO code application logic here
         //ConnectDB();
@@ -40,8 +40,8 @@ public class LibraryInquirySystem {
             }else if(mainChoice == 3){
                  user = new Librarian();
             }else if (mainChoice == 4){
-				break;
-			}else{ 
+                 break;
+            }else{ 
                 System.out.println("Invalid input!");
                 printmainMenu();
                 continue;
@@ -55,6 +55,7 @@ public class LibraryInquirySystem {
             System.out.println("");
             printmainMenu();
         }
+        scan.close();
     }
     
     public static void printmainMenu(){        
@@ -70,7 +71,6 @@ public class LibraryInquirySystem {
     }
     
     public static void ConnectDB(){
-        Connection conn = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(dbAddress, dbUserName, dbPassword);
