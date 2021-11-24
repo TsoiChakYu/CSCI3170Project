@@ -84,6 +84,9 @@ public class LibraryInquirySystem {
         }
     }
     
+    public static Connection getConn(){
+        return conn;
+    }
 }
 
 abstract class User{
