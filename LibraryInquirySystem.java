@@ -19,10 +19,10 @@ public class LibraryInquirySystem {
     private static final String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group60";
     private static final String dbUserName = "Group60";
     private static final String dbPassword = "CSCI3170";
-    private static Connection conn = null;
+    private static Connection conn;
     public static void main(String[] args) {
         // TODO code application logic here
-        //ConnectDB();
+        ConnectDB();
         
         User user;
         Scanner scan = new Scanner(System.in);
@@ -74,6 +74,7 @@ public class LibraryInquirySystem {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(dbAddress, dbUserName, dbPassword);
+            System.out.println("conn success");
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
