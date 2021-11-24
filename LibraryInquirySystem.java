@@ -22,7 +22,7 @@ public class LibraryInquirySystem {
     private static Connection conn = null;
     public static void main(String[] args) {
         // TODO code application logic here
-        //ConnectDB();
+        ConnectDB();
         
         User user;
         Scanner scan = new Scanner(System.in);
@@ -74,6 +74,7 @@ public class LibraryInquirySystem {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(dbAddress, dbUserName, dbPassword);
+            System.out.println(conn);
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
