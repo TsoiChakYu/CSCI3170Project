@@ -22,7 +22,7 @@ public class LibraryInquirySystem {
     
     public static void main(String[] args) {
         // TODO code application logic here
-        ConnectDB();
+        //ConnectDB();
         
         User user;
         Scanner scan = new Scanner(System.in);
@@ -39,7 +39,9 @@ public class LibraryInquirySystem {
                  user = new LibraryUser();
             }else if(mainChoice == 3){
                  user = new Librarian();
-            }else{ 
+            }else if (mainChoice == 4){
+				break;
+			}else{ 
                 System.out.println("Invalid input!");
                 printmainMenu();
                 continue;
