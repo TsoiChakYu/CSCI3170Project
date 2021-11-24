@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author 
  */
 public class LibraryInquirySystem {
-    private static final String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group60";
+    private static final String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db60";
     private static final String dbUserName = "Group60";
     private static final String dbPassword = "CSCI3170";
     private static Connection conn;
