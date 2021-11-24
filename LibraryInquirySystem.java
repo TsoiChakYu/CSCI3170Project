@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
+ 
+
 import java.lang.String;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,13 +16,10 @@ import java.util.logging.Logger;
  * @author 
  */
 public class LibraryInquirySystem {
-    private static final String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db60";
-    private static final String dbUserName = "Group60";
-    private static final String dbPassword = "CSCI3170";
-    private static Connection conn;
+
+
     public static void main(String[] args) {
         // TODO code application logic here
-        ConnectDB();
         
         User user;
         Scanner scan = new Scanner(System.in);
@@ -30,6 +27,8 @@ public class LibraryInquirySystem {
         int userChoice = 0;
         boolean returnMainMenu = false;
         
+        ConnectDatabase connDB = new ConnectDatabase();
+        connDB.connectDB();
         printmainMenu();
         while (scan.hasNext()){
             mainChoice = scan.nextInt();            //no input validation
@@ -69,8 +68,22 @@ public class LibraryInquirySystem {
         System.out.println("4. Exit this program");
         System.out.print("Enter Your Choice: ");
     }
-    
-    public static void ConnectDB(){
+}
+
+class ConnectDatabase{
+    private static String dbAddress;
+    private static String dbUserName;
+    private static String dbPassword;
+    private static Connection conn;
+
+    public ConnectDatabase(){
+        dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db60";
+        dbUserName = "Group60";
+        dbPassword = "CSCI3170";
+        conn = null;
+    }
+
+    public static void connectDB(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(dbAddress, dbUserName, dbPassword);
@@ -82,17 +95,19 @@ public class LibraryInquirySystem {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(LibraryInquirySystem.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
+    }    
+
     public static Connection getConn(){
         return conn;
-    }
+    }    
 }
 
 abstract class User{
     abstract void printMenu();  //print different menu for the user
     abstract boolean performOperation(int choice);
     public abstract String toString();
+
+    
 }
 
 class Administrator extends User{
@@ -136,12 +151,53 @@ class Administrator extends User{
     
     private void createTable(){
         System.out.println("createTable()");
-        //TODO
+        System.out.print("Processing...");
+        
+        try {
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            stmt.executeUpdate("DROP TABLE IF EXISTS borrow;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS libuser;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS user_category;");        
+            stmt.executeUpdate("DROP TABLE IF EXISTS authorship;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS copy;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS book;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS book_category;");
+            // stmt.executeUpdate("CREATE TABLE category ();");
+            stmt.execute("CREATE TABLE user_category (ucid INTEGER NOT NULL PRIMARY KEY, max INTEGER NOT NULL,  period INTEGER NOT NULL);");
+            stmt.execute("CREATE TABLE libuser (libuid CHAR(10) NOT NULL PRIMARY KEY, name VARCHAR(25) NOT NULL, address VARCHAR(100) NOT NULL, ucid INTEGER NOT NULL, FOREIGN KEY(ucid) REFERENCES user_category(ucid));");
+            stmt.execute("CREATE TABLE book_category (bcid INTEGER NOT NULL PRIMARY KEY, bcname VARCHAR(30) NOT NULL);");
+            stmt.execute("CREATE TABLE book (callnum VARCHAR(8) NOT NULL PRIMARY KEY, title VARCHAR(30) NOT NULL, publish DATE, rating FLOAT, tborrowed INTEGER NOT NULL, bcid INTEGER, FOREIGN KEY(bcid) REFERENCES book_category(bcid));"); // date format dd/mm/yy
+            stmt.execute("CREATE TABLE copy (callnum VARCHAR(8) NOT NULL, copynum INTEGER NOT NULL, PRIMARY KEY (callnum, copynum), FOREIGN KEY (callnum) REFERENCES book(callnum));");
+           // stmt.execute("CREATE TABLE borrow (libuid CHAR(10) NOT NULL, );"):
+            stmt.execute("CREATE TABLE borrow (libuid CHAR(10) NOT NULL, callnum VARCHAR(8) NOT NULL, copynum INTEGER NOT NULL, checkout DATE NOT NULL, returndate DATE, PRIMARY KEY(libuid, callnum, copynum, checkout), FOREIGN KEY(libuid) REFERENCES libuser(libuid), FOREIGN KEY(callnum, copynum) REFERENCES copy(callnum, copynum));");
+            stmt.execute("CREATE TABLE authorship(aname VARCHAR(25) NOT NULL, callnum VARCHAR(8) NOT NULL, PRIMARY KEY(aname, callnum), FOREIGN KEY(callnum) REFERENCES book(callnum));");
+            //stmt.execute("show")
+            stmt.close();
+            System.out.println("Done. Database is initialized.");
+        } catch (Exception e){
+            System.out.println("[Error]: " + e.toString());
+        }
+        
     }
     
-    private void deleteTable(){
+    private void deleteTable(){ //wait for debug
         System.out.println("deleteTable()");
-        //TODO
+        System.out.println("Processing...");
+        try {
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            stmt.executeUpdate("DROP TABLE IF EXISTS borrow;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS libuser;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS user_category;");        
+            stmt.executeUpdate("DROP TABLE IF EXISTS authorship;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS copy;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS book;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS book_category;");
+            stmt.close();          
+            System.out.println("Done. Database is removed."); 
+        } catch (Exception e) {
+            //TODO: handle exception
+            System.out.println("[Error]: "+e.toString());
+        }
     }
     
     private void loadData(){
