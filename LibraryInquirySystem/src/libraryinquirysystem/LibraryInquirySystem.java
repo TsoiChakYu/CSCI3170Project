@@ -3,18 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package libraryinquirysystem;
+
 import java.lang.String;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author 
  */
 public class LibraryInquirySystem {
-
+    private static final String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group60";
+    private static final String dbUserName = "Group60";
+    private static final String dbPassword = "CSCI3170";
     
     public static void main(String[] args) {
         // TODO code application logic here
+        ConnectDB();
         
         User user;
         Scanner scan = new Scanner(System.in);
@@ -31,14 +39,12 @@ public class LibraryInquirySystem {
                  user = new LibraryUser();
             }else if(mainChoice == 3){
                  user = new Librarian();
-            }else if (mainChoice == 4) {
-                break;
-            } else{ 
+            }else{ 
                 System.out.println("Invalid input!");
                 printmainMenu();
                 continue;
             }
-            
+            // Choose the menu option
             do {                
                 user.printMenu();
                 userChoice = scan.nextInt();                //no input validation
@@ -59,6 +65,20 @@ public class LibraryInquirySystem {
         System.out.println("3. Operations for Librarian");
         System.out.println("4. Exit this program");
         System.out.print("Enter Your Choice: ");
+    }
+    
+    public static void ConnectDB(){
+        Connection conn = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(dbAddress, dbUserName, dbPassword);
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(LibraryInquirySystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
