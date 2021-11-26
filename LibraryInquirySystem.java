@@ -174,7 +174,6 @@ class Administrator extends User{
     }
     
     private void deleteTable(){ //wait for debug
-        System.out.println("deleteTable()");
         System.out.println("Processing...");
         try {
             Statement stmt = ConnectDatabase.getConn().createStatement();
@@ -385,8 +384,84 @@ class Administrator extends User{
     }
     
     private void showRecords(){
-        System.out.println("showRecords()");
-        //TODO
+        System.out.println("Number of records in each table:");
+        //get recordNum of user_category
+        try{
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM user_category;");
+            rs.next();
+            int recordNum = rs.getInt(1);
+            System.out.println("user_category: " + recordNum);
+            stmt.close();
+        }catch(Exception e){
+            System.out.println("[Error]: Fail to get the number of records of user_category. Please make sure the table is already created.");
+        }
+        //get recordNum of libuser
+        try{
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM libuser;");
+            rs.next();
+            int recordNum = rs.getInt(1);
+            System.out.println("libuser: " + recordNum);
+            stmt.close();
+        }catch(Exception e){
+            System.out.println("[Error]: Fail to get the number of records of libuser. Please make sure the table is already created.");
+        }
+        //get recordNum of book_category
+        try{
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM book_category;");
+            rs.next();
+            int recordNum = rs.getInt(1);
+            System.out.println("book_category: " + recordNum);
+            stmt.close();
+        }catch(Exception e){
+            System.out.println("[Error]: Fail to get the number of records of book_category. Please make sure the table is already created.");
+        }
+        //get recordNum of book        
+        try{
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM book;");
+            rs.next();
+            int recordNum = rs.getInt(1);
+            System.out.println("book: " + recordNum);
+            stmt.close();
+        }catch(Exception e){
+            System.out.println("[Error]: Fail to get the number of records of book. Please make sure the table is already created.");
+        }
+        //get recordNum of copy
+        try{
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM copy;");
+            rs.next();
+            int recordNum = rs.getInt(1);
+            System.out.println("copy: " + recordNum);
+            stmt.close();
+        }catch(Exception e){
+            System.out.println("[Error]: Fail to get the number of records of copy. Please make sure the table is already created.");
+        }
+        //get recordNum of borrow
+        try{
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM borrow;");
+            rs.next();
+            int recordNum = rs.getInt(1);
+            System.out.println("borrow: " + recordNum);
+            stmt.close();
+        }catch(Exception e){
+            System.out.println("[Error]: Fail to get the number of records of borrow. Please make sure the table is already created.");
+        }
+        //get recordNum of authorship
+        try{
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM authorship;");
+            rs.next();
+            int recordNum = rs.getInt(1);
+            System.out.println("authorship: " + recordNum);
+            stmt.close();
+        }catch(Exception e){
+            System.out.println("[Error]: Fail to get the number of records of authorship. Please make sure the table is already created.");
+        }
     }
     
     @Override
