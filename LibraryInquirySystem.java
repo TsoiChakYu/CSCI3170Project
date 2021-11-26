@@ -27,8 +27,7 @@ public class LibraryInquirySystem {
         int userChoice = 0;
         boolean returnMainMenu = false;
         
-        ConnectDatabase connDB = new ConnectDatabase();
-        connDB.connectDB();
+        ConnectDatabase.connectDB();
         printmainMenu();
         while (scan.hasNext()){
             mainChoice = scan.nextInt();            //no input validation
@@ -49,7 +48,7 @@ public class LibraryInquirySystem {
             do {                
                 user.printMenu();
                 userChoice = scan.nextInt();                //no input validation
-                returnMainMenu = user.performOperation(userChoice);
+                returnMainMenu = user.performOperation(userChoice,scan);
             } while (!returnMainMenu);
             System.out.println("");
             printmainMenu();
@@ -71,17 +70,11 @@ public class LibraryInquirySystem {
 }
 
 class ConnectDatabase{
-    private static String dbAddress;
-    private static String dbUserName;
-    private static String dbPassword;
-    private static Connection conn;
+    private static String dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db60";
+    private static String dbUserName = "Group60";
+    private static String dbPassword = "CSCI3170";
+    private static Connection conn = null;
 
-    public ConnectDatabase(){
-        dbAddress = "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db60";
-        dbUserName = "Group60";
-        dbPassword = "CSCI3170";
-        conn = null;
-    }
 
     public static void connectDB(){
         try {
@@ -104,10 +97,8 @@ class ConnectDatabase{
 
 abstract class User{
     abstract void printMenu();  //print different menu for the user
-    abstract boolean performOperation(int choice);
+    abstract boolean performOperation(int choice, Scanner scan);
     public abstract String toString();
-
-    
 }
 
 class Administrator extends User{
@@ -126,7 +117,7 @@ class Administrator extends User{
     }
     
     @Override
-    boolean performOperation(int choice){
+    boolean performOperation(int choice, Scanner scan){
         switch(choice){
             case 1:
                 createTable();
@@ -135,7 +126,7 @@ class Administrator extends User{
                 deleteTable();
                 break;
             case 3:
-                loadData();
+                loadData(scan);
                 break;
             case 4:
                 showRecords();
@@ -195,14 +186,30 @@ class Administrator extends User{
             stmt.close();          
             System.out.println("Done. Database is removed."); 
         } catch (Exception e) {
-            //TODO: handle exception
-            System.out.println("[Error]: "+e.toString());
+            System.out.println("[Error]: "+e.toString() +"Please make sure you have already created the database.");
         }
     }
     
-    private void loadData(){
-        System.out.println("loadData()");
+    private void loadData(Scanner scan){
+        //System.out.println("loadData()");
         //TODO
+        try{
+            String folder_path;
+            System.out.println("");             //a blank line according to the demo provided
+            System.out.print("Please enter the folder path:");
+            folder_path = scan.next();
+            System.out.println(folder_path);    //for debug
+            System.out.print("Processing...");
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+
+
+
+
+            stmt.close();
+            System.out.println("Done. Data is inputted to the database.");
+        }catch(Exception e){
+            System.out.println("[Error]: "+e.toString() +"Please make sure you have already created the database.");
+        }
     }
     
     private void showRecords(){
@@ -230,7 +237,7 @@ class LibraryUser extends User{
     }
     
     @Override
-    boolean performOperation(int choice){
+    boolean performOperation(int choice, Scanner scan){
         switch(choice){
             case 1:
                 searchBooks();
@@ -278,7 +285,7 @@ class Librarian extends User{
     }
     
     @Override
-    boolean performOperation(int choice){
+    boolean performOperation(int choice, Scanner scan){
         switch(choice){
             case 1:
                 borrowBook();
