@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
- 
+
 
 import java.lang.String;
 import java.sql.*;
@@ -15,20 +15,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 /**
  *
- * @author 
+ * @author
  */
 public class LibraryInquirySystem {
 
 
     public static void main(String[] args) {
         // TODO code application logic here
-        
+
         User user;
         Scanner scan = new Scanner(System.in);
         int mainChoice = 0;
         int userChoice = 0;
         boolean returnMainMenu = false;
-        
+
         ConnectDatabase.connectDB();
         printmainMenu();
         while (scan.hasNext()){
@@ -41,13 +41,13 @@ public class LibraryInquirySystem {
                  user = new Librarian();
             }else if (mainChoice == 4){
                  break;
-            }else{ 
+            }else{
                 System.out.println("Invalid input!");
                 printmainMenu();
                 continue;
             }
             // Choose the menu option
-            do {                
+            do {
                 user.printMenu();
                 userChoice = scan.nextInt();                //no input validation
                 returnMainMenu = user.performOperation(userChoice,scan);
@@ -57,8 +57,8 @@ public class LibraryInquirySystem {
         }
         scan.close();
     }
-    
-    public static void printmainMenu(){        
+
+    public static void printmainMenu(){
         System.out.println("Welcome to Library Inquiry System!");
         System.out.println();
         System.out.println("-----Main menu-----");
@@ -90,11 +90,11 @@ class ConnectDatabase{
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(LibraryInquirySystem.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
+    }
 
     public static Connection getConn(){
         return conn;
-    }    
+    }
 }
 
 abstract class User{
@@ -117,7 +117,7 @@ class Administrator extends User{
         System.out.println("5. Return to the main menu");
         System.out.print("Enter Your Choice: ");
     }
-    
+
     @Override
     boolean performOperation(int choice, Scanner scan){
         switch(choice){
@@ -138,21 +138,21 @@ class Administrator extends User{
             default:
                 System.out.println("Invalid Input");
         }
-        
+
         return false;
     }
-    
+
     private void createTable(){
         //System.out.println("createTable()");
         System.out.print("Processing...");
-        
+
         try {
             Statement stmt = ConnectDatabase.getConn().createStatement();
             //drop the same table if existed
-            stmt.executeUpdate("DROP TABLE IF EXISTS borrow;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS borrow;");
             stmt.executeUpdate("DROP TABLE IF EXISTS libuser;");
-            stmt.executeUpdate("DROP TABLE IF EXISTS user_category;");        
-            stmt.executeUpdate("DROP TABLE IF EXISTS authorship;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS user_category;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS authorship;");
             stmt.executeUpdate("DROP TABLE IF EXISTS copy;");
             stmt.executeUpdate("DROP TABLE IF EXISTS book;");
             stmt.executeUpdate("DROP TABLE IF EXISTS book_category;");
@@ -170,27 +170,27 @@ class Administrator extends User{
         } catch (Exception e){
             System.out.println("[Error]: " + e.toString());
         }
-        
+
     }
-    
+
     private void deleteTable(){ //wait for debug
         System.out.println("Processing...");
         try {
             Statement stmt = ConnectDatabase.getConn().createStatement();
-            stmt.executeUpdate("DROP TABLE IF EXISTS borrow;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS borrow;");
             stmt.executeUpdate("DROP TABLE IF EXISTS libuser;");
-            stmt.executeUpdate("DROP TABLE IF EXISTS user_category;");        
-            stmt.executeUpdate("DROP TABLE IF EXISTS authorship;");  
+            stmt.executeUpdate("DROP TABLE IF EXISTS user_category;");
+            stmt.executeUpdate("DROP TABLE IF EXISTS authorship;");
             stmt.executeUpdate("DROP TABLE IF EXISTS copy;");
             stmt.executeUpdate("DROP TABLE IF EXISTS book;");
             stmt.executeUpdate("DROP TABLE IF EXISTS book_category;");
-            stmt.close();          
-            System.out.println("Done. Database is removed."); 
+            stmt.close();
+            System.out.println("Done. Database is removed.");
         } catch (Exception e) {
             System.out.println("[Error]: "+e.toString() +"Please make sure you have already created the database.");
         }
     }
-    
+
     private void loadData(Scanner scan){
         //System.out.println("loadData()");
         //TODO
@@ -219,7 +219,7 @@ class Administrator extends User{
             }catch(Exception e){
                 System.out.print("\n[Error]: book.txt not found. Please make sure you have inputed the correct folder path.");
                 missingFile = true;
-            }            
+            }
             //check check_out.txt exist
             try{
                 File checkOut = new File(System.getProperty("user.dir") + "/" + folder_path + "" + "/check_out.txt");
@@ -262,7 +262,7 @@ class Administrator extends User{
                     stmt.executeUpdate("INSERT INTO book_category VALUES('" + Integer.parseInt(bookCategoryData[0]) + "',\"" + bookCategoryData[1] + "\");");
                 }
                 stmt.close();
-                scanFileData.close();                
+                scanFileData.close();
             }catch(Exception e){
                 System.out.println("[Error]: Fail to insert data to book_category." + e.toString());
                 failInsertData = true;
@@ -276,7 +276,7 @@ class Administrator extends User{
                     String[] userCategoryData = scanFileData.nextLine().split("\\t");
                     stmt.executeUpdate("INSERT INTO user_category VALUES('" + Integer.parseInt(userCategoryData[0]) + "','" + Integer.parseInt(userCategoryData[1]) + "','" + Integer.parseInt(userCategoryData[2]) + "');");
                 }
-                stmt.close();                
+                stmt.close();
                 scanFileData.close();
             }catch(Exception e){
                 System.out.println("[Error]: Fail to insert data to user_category." + e.toString());
@@ -291,7 +291,7 @@ class Administrator extends User{
                     String[] libuserData = scanFileData.nextLine().split("\\t");
                     stmt.executeUpdate("INSERT INTO libuser VALUES(\"" + libuserData[0] + "\",\"" + libuserData[1] + "\",'" + Integer.parseInt(libuserData[2]) + "',\"" + libuserData[3] + "\",'" + Integer.parseInt(libuserData[4]) +"');");
                 }
-                stmt.close();                 
+                stmt.close();
                 scanFileData.close();
             }catch(Exception e){
                 System.out.println("[Error]: Fail to insert data to libuser." + e.toString());
@@ -310,13 +310,13 @@ class Administrator extends User{
                         stmt.executeUpdate("INSERT INTO book VALUES(\"" + bookData[0] + "\",\"" + bookData[2] + "\",STR_TO_DATE('" + bookData[4] + "', '%d/%m/%Y')," + (bookData[5].equals("null")?"null":Float.parseFloat(bookData[5])) + ",'" + Integer.parseInt(bookData[6]) + "','" + Integer.parseInt(bookData[7]) +"');");
                     }
                 }
-                stmt.close();                
+                stmt.close();
                 scanFileData.close();
             }catch(Exception e){
                 System.out.println("[Error]: Fail to insert data to book." + e.toString());
                 failInsertData = true;
-            }  
-            //Load authorship 
+            }
+            //Load authorship
             try{
                 File book = new File(System.getProperty("user.dir") + "/" + folder_path + "" + "/book.txt");
                 Scanner scanFileData = new Scanner(book);
@@ -328,12 +328,12 @@ class Administrator extends User{
                         stmt.executeUpdate("INSERT INTO authorship VALUES(\"" + author +"\",\"" + tmpData[0] + "\");");
                     }
                 }
-                stmt.close();                
+                stmt.close();
                 scanFileData.close();
             }catch(Exception e){
                 System.out.println("[Error]: Fail to insert data to authorship." + e.toString());
                 failInsertData = true;
-            } 
+            }
             //Load copy
             try{
                 File book = new File(System.getProperty("user.dir") + "/" + folder_path + "" + "/book.txt");
@@ -346,12 +346,12 @@ class Administrator extends User{
                         stmt.executeUpdate("INSERT INTO copy VALUES('" + tmpData[0] + "','" + i + "');");
                     }
                 }
-                stmt.close();                
+                stmt.close();
                 scanFileData.close();
             }catch(Exception e){
                 System.out.println("[Error]: Fail to insert data to copy." + e.toString());
                 failInsertData = true;
-            } 
+            }
             //load borrow
             try{
                 File checkOut = new File(System.getProperty("user.dir") + "/" + folder_path + "" + "/check_out.txt");
@@ -366,7 +366,7 @@ class Administrator extends User{
                         stmt.executeUpdate("INSERT INTO borrow VALUES(\"" + checkOutData[2] + "\",\"" + checkOutData[0] + "\",'" + Integer.parseInt(checkOutData[1]) + "',STR_TO_DATE('" + checkOutData[3] + "', '%d/%m/%Y'),STR_TO_DATE('" + checkOutData[4] + "', '%d/%m/%Y'));");
                     }
                 }
-                stmt.close();                
+                stmt.close();
                 scanFileData.close();
             }catch(Exception e){
                 System.out.println("[Error]: Fail to insert data to borrow." + e.toString());
@@ -382,7 +382,7 @@ class Administrator extends User{
             System.out.println("[Error]: "+e.toString() +"Please make sure you have already created the database.");
         }
     }
-    
+
     private void showRecords(){
         System.out.println("Number of records in each table:");
         //get recordNum of user_category
@@ -418,7 +418,7 @@ class Administrator extends User{
         }catch(Exception e){
             System.out.println("[Error]: Fail to get the number of records of book_category. Please make sure the table is already created.");
         }
-        //get recordNum of book        
+        //get recordNum of book
         try{
             Statement stmt = ConnectDatabase.getConn().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM book;");
@@ -463,7 +463,7 @@ class Administrator extends User{
             System.out.println("[Error]: Fail to get the number of records of authorship. Please make sure the table is already created.");
         }
     }
-    
+
     @Override
     public String toString(){
         return "Administrator";
@@ -471,7 +471,7 @@ class Administrator extends User{
 }
 
 class LibraryUser extends User{
-    
+
     @Override
     void printMenu(){
         System.out.println();
@@ -482,7 +482,7 @@ class LibraryUser extends User{
         System.out.println("3. Return to the main menu");
         System.out.print("Enter Your Choice: ");
     }
-    
+
     @Override
     boolean performOperation(int choice, Scanner scan){
         switch(choice){
@@ -497,20 +497,20 @@ class LibraryUser extends User{
             default:
                 System.out.println("Invalid Input");
         }
-        
+
         return false;
     }
-    
+
     private void searchBooks(){
         System.out.println("searchBooks()");
         //TODO
     }
-    
+
     private void showLoanRecords(){
         System.out.println("showLoanRecords()");
         //TODO
     }
-    
+
     @Override
     public String toString(){
         return "LibraryUser";
@@ -518,7 +518,7 @@ class LibraryUser extends User{
 }
 
 class Librarian extends User{
-    
+
     @Override
     void printMenu(){
         System.out.println();
@@ -530,7 +530,7 @@ class Librarian extends User{
         System.out.println("4. Return to the main menu");
         System.out.print("Enter Your Choice: ");
     }
-    
+
     @Override
     boolean performOperation(int choice, Scanner scan){
         switch(choice){
@@ -548,25 +548,178 @@ class Librarian extends User{
             default:
                 System.out.println("Invalid Input");
         }
-       
+
         return false;
     }
-    
+
     private void borrowBook(){
-        System.out.println("borrowBook()");
-        //TODO
+
+        // get borrow information
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter The User ID: ");
+        String userID = sc.nextLine();
+        System.out.print("Enter The Call Number: ");
+        String callNum = sc.nextLine();
+        System.out.print("Enter The Copy Number: ");
+        int copyNum = sc.nextInt();
+
+        // check whether the book is available
+        try {
+            Connection conn = ConnectDatabase.getConn();
+
+            // get all borrow records with no return date for this copy
+            PreparedStatement pstmtBorrowed = conn.prepareStatement("SELECT * FROM borrow WHERE callnum = ? AND copynum = ? AND returndate IS NULL");
+            pstmtBorrowed.setString(1, callNum);
+            pstmtBorrowed.setInt(2, copyNum);
+
+            ResultSet borrowedCopies = pstmtBorrowed.executeQuery();
+
+            // see if the book is available
+            if (borrowedCopies.next()) {
+                // the copy was already borrowed, thus not available
+                System.out.println("The book is not available.");
+            } else {
+                // the copy was not yet borrowed, perform borrowing
+
+                // create new borrow record
+                PreparedStatement pstmtToBorrow = conn.prepareStatement("INSERT INTO borrow (libuid, callnum, copynum, checkout, returndate) VALUES (?, ?, ?, ?, NULL)");
+
+                pstmtToBorrow.setString(1, userID);
+                pstmtToBorrow.setString(2, callNum);
+                pstmtToBorrow.setInt(3, copyNum);
+                pstmtToBorrow.setDate(4, java.sql.Date.valueOf(java.time.LocalDate.now()));
+                pstmtToBorrow.execute();
+
+                // finish
+                System.out.println("Book borrowing performed successfully.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error in borrowing book: " + e);
+        }
     }
-    
+
     private void returnBook(){
-        System.out.println("returnBook()");
-        //TODO
+
+        // get return information
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter The User ID: ");
+        String userID = sc.nextLine();
+        System.out.print("Enter The Call Number: ");
+        String callNum = sc.nextLine();
+        System.out.print("Enter The Copy Number: ");
+        int copyNum = sc.nextInt();
+        System.out.print("Enter Your Rating of the Book: ");
+        int rating = sc.nextInt();
+
+        // check whether the book is being borrowed
+        try {
+            Connection conn = ConnectDatabase.getConn();
+
+            // search for the borrow record
+            PreparedStatement pstmtIsBorrowed = conn.prepareStatement("SELECT * FROM borrow WHERE libuid = ? AND callnum = ? AND copynum = ? AND returndate IS NULL");
+            pstmtIsBorrowed.setString(1, userID);
+            pstmtIsBorrowed.setString(2, callNum);
+            pstmtIsBorrowed.setInt(3, copyNum);
+
+            ResultSet borrowingCopies = pstmtIsBorrowed.executeQuery();
+
+            // check whether the borrow record exists
+            if (borrowingCopies.next()) {
+                // pending record exists, perform return
+                PreparedStatement pstmtReturn = conn.prepareStatement("UPDATE borrow SET returndate = ? WHERE libuid = ? AND callnum = ? AND copynum = ? AND returndate IS NULL");
+                pstmtReturn.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
+                pstmtReturn.setString(2, userID);
+                pstmtReturn.setString(3, callNum);
+                pstmtReturn.setInt(4, copyNum);
+                pstmtReturn.executeUpdate();
+
+                // update rating of the book
+
+                // see if the book has rating or not
+                PreparedStatement pstmtCheckRating = conn.prepareStatement("SELECT rating FROM book WHERE callnum = ?");
+                pstmtCheckRating.setString(1, callNum);
+                ResultSet bookRating = pstmtCheckRating.executeQuery();
+                bookRating.next();
+                String ratingString = bookRating.getString(1);
+
+                if (ratingString == null) {
+                    // no rating, set rating as initial rating
+                    PreparedStatement pstmtInitRating = conn.prepareStatement("UPDATE book SET rating = ? WHERE callnum = ?");
+                    pstmtInitRating.setFloat(1, (float) rating);
+                    pstmtInitRating.setString(2, callNum);
+                    pstmtInitRating.executeUpdate();
+                } else {
+                    // rating exists, update rating
+                    PreparedStatement pstmtUpdateRating = conn.prepareStatement("UPDATE book SET rating = (rating * tborrowed + ?) / (tborrowed + 1) WHERE callnum = ?");
+                    pstmtUpdateRating.setFloat(1, (float) rating);
+                    pstmtUpdateRating.setString(2, callNum);
+                    pstmtUpdateRating.executeUpdate();
+                }
+
+                // increase number of times the book borrowed
+                PreparedStatement pstmtIncreaseBorrowedCount = conn.prepareStatement("UPDATE book SET tborrowed = tborrowed + 1 WHERE callnum = ?");
+                pstmtIncreaseBorrowedCount.setString(1, callNum);
+                pstmtIncreaseBorrowedCount.executeUpdate();
+
+                System.out.println("Book returning performed successfully.");
+            } else {
+                // no borrowed record found
+                System.out.println("No borrowed record is found");
+            }
+        } catch (Exception e) {
+            System.out.println("Error in returning book: " + e);
+        }
     }
-    
+
     private void listUnreturnBook(){
-        System.out.println("listUnreturnBook()");
-        //TODO
+
+        // get date range
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Type in the starting date [dd/mm/yyyy]: ");
+        String startDateDMY = sc.nextLine();
+        System.out.print("Type in the ending date [dd/mm/yyyy]: ");
+        String endDateDMY = sc.nextLine();
+
+
+        // query for all unreturned copies within specified date inclusively
+        try {
+            java.text.DateFormat df = new java.text.SimpleDateFormat("dd/MM/yyyy");
+            java.util.Date startDate = df.parse(startDateDMY);
+            java.util.Date endDate = df.parse(endDateDMY);
+
+            Connection conn = ConnectDatabase.getConn();
+
+            PreparedStatement pstmtUnreturned = conn.prepareStatement("SELECT libuid, callnum, copynum, checkout FROM borrow WHERE checkout BETWEEN ? AND ? AND returndate IS NULL ORDER BY checkout DESC ");
+            pstmtUnreturned.setDate(1, new java.sql.Date(startDate.getTime()));
+            pstmtUnreturned.setDate(2, new java.sql.Date(endDate.getTime()));
+
+            ResultSet unreturnedCopies = pstmtUnreturned.executeQuery();
+
+            if (!unreturnedCopies.isBeforeFirst()) {
+                // empty result
+                System.out.println("No unreturned books");
+            } else {
+                // display list of unreturned copies
+                System.out.println("|LibUID|CallNum|CopyNum|Checkout|");
+                ResultSetMetaData rsmd = unreturnedCopies.getMetaData();
+                int colNum = rsmd.getColumnCount();
+                while (unreturnedCopies.next()) {
+                    System.out.print("|");
+                    for (int i = 1; i <= colNum; i++) {
+                        String fieldString = unreturnedCopies.getString(i);
+                        System.out.print(fieldString + "|");
+                    }
+                    System.out.println("");
+                }
+                System.out.println("End of Query");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error in listing unreturned books: " + e);
+        }
+
     }
-    
+
     @Override
     public String toString(){
         return "Librarian";
