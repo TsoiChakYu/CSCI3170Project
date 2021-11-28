@@ -36,11 +36,11 @@ public class LibraryInquirySystem {
             if(mainChoice == 1){
             user = new Administrator();
             }else if(mainChoice == 2){
-                 user = new LibraryUser();
+                user = new LibraryUser();
             }else if(mainChoice == 3){
-                 user = new Librarian();
+                user = new Librarian();
             }else if (mainChoice == 4){
-                 break;
+                break;
             }else{
                 System.out.println("Invalid input!");
                 printmainMenu();
@@ -193,7 +193,7 @@ class Administrator extends User{
 
     private void loadData(Scanner scan){
         //System.out.println("loadData()");
-        //TODO
+        
         try{
             String folder_path;
             boolean missingFile = false;
@@ -511,175 +511,175 @@ class LibraryUser extends User{
         int choice = scan.nextInt();
         scan.nextLine();
         if (choice < 1 || choice > 3) {
-          System.out.println("Invalid input");
-          return;
+            System.out.println("Invalid input");
+            return;
         }
         System.out.print("Type in the Search Keyword: ");
         String keyword = scan.nextLine();
     
         switch (choice) {
-          /* Search by callnum */
-          case 1:
-            try {
-              Statement stmt = ConnectDatabase.getConn().createStatement();
-              ResultSet rs = stmt.executeQuery(
-                "SELECT B.callnum, B.title, BC.bcname, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), B.rating, COUNT(DISTINCT(C.copynum)) " +
-                "FROM book B, copy C, book_category BC, authorship A " +
-                "WHERE B.callnum = C.callnum AND B.bcid = BC.bcid AND B.callnum = A.callnum AND " +
-                "B.callnum = '" +
-                keyword +
-                "' " +
-                "HAVING B.callnum IS NOT NULL " +
-                "ORDER BY B.callnum ASC;"
-              );
-              if (!rs.isBeforeFirst()) {
-                System.out.println("Call Num is invalid");
-                return;
-              } else {
-                System.out.println(
-                  "|Call Num|Title|Book Category|Author|Rating|Available No. of Copy|"
-                );
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int colNum = rsmd.getColumnCount();
-                while (rs.next()) {
-                  System.out.print("|");
-                  for (int i = 1; i <= colNum; i++) {
-                    String fieldString = rs.getString(i);
-                    System.out.print(fieldString + "|");
-                  }
-                  System.out.println();
+            /* Search by callnum */
+            case 1:
+                try {
+                    Statement stmt = ConnectDatabase.getConn().createStatement();
+                    ResultSet rs = stmt.executeQuery(
+                        "SELECT B.callnum, B.title, BC.bcname, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), B.rating, COUNT(DISTINCT(C.copynum)) " +
+                        "FROM book B, copy C, book_category BC, authorship A " +
+                        "WHERE B.callnum = C.callnum AND B.bcid = BC.bcid AND B.callnum = A.callnum AND " +
+                        "B.callnum = '" +
+                        keyword +
+                        "' " +
+                        "HAVING B.callnum IS NOT NULL " +
+                        "ORDER BY B.callnum ASC;"
+                    );
+                    if (!rs.isBeforeFirst()) { // no records are found
+                        System.out.println("Call Num is invalid");
+                        return;
+                    } else {
+                        System.out.println(
+                            "|Call Num|Title|Book Category|Author|Rating|Available No. of Copy|"
+                        );
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int colNum = rsmd.getColumnCount();
+                        while (rs.next()) {
+                            System.out.print("|");
+                            for (int i = 1; i <= colNum; i++) {
+                                String fieldString = rs.getString(i);
+                                System.out.print(fieldString + "|");
+                            }
+                            System.out.println();
+                        }
+                        System.out.println("End of Query");
+                    }   
+                } catch (Exception e) {
+                    System.out.println("[Error]: " + e.toString());
+                    return;
                 }
-                System.out.println("End of Query");
-              }
-            } catch (Exception e) {
-              System.out.println("[Error]: " + e.toString());
-              return;
-            }
-            break;
-          /* Search by title */
-          case 2:
-            try {
-              Statement stmt = ConnectDatabase.getConn().createStatement();
-              ResultSet rs = stmt.executeQuery(
-                "SELECT B.callnum, B.title, BC.bcname, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), B.rating, COUNT(DISTINCT(C.copynum)) " +
-                "FROM book B, copy C, book_category BC, authorship A " +
-                "WHERE B.callnum = C.callnum AND B.bcid = BC.bcid AND B.callnum = A.callnum AND B.title LIKE BINARY '%" +
-                keyword +
-                "%' " +
-                "GROUP BY B.callnum " +
-                "ORDER BY B.callnum ASC;"
-              );
-              if (!rs.isBeforeFirst()) {
-                System.out.println("No partial match title");
-                return;
-              } else {
-                System.out.println(
-                  "|Call Num|Title|Book Category|Author|Rating|Available No. of Copy|"
-                );
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int colNum = rsmd.getColumnCount();
-                while (rs.next()) {
-                  System.out.print("|");
-                  for (int i = 1; i <= colNum; i++) {
-                    String fieldString = rs.getString(i);
-                    System.out.print(fieldString + "|");
-                  }
-                  System.out.println();
+                break;
+            /* Search by title */
+            case 2:
+                try {
+                    Statement stmt = ConnectDatabase.getConn().createStatement();
+                    ResultSet rs = stmt.executeQuery(
+                        "SELECT B.callnum, B.title, BC.bcname, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), B.rating, COUNT(DISTINCT(C.copynum)) " +
+                        "FROM book B, copy C, book_category BC, authorship A " +
+                        "WHERE B.callnum = C.callnum AND B.bcid = BC.bcid AND B.callnum = A.callnum AND B.title LIKE BINARY '%" +
+                        keyword +
+                        "%' " +
+                        "GROUP BY B.callnum " +
+                        "ORDER BY B.callnum ASC;"
+                    );
+                    if (!rs.isBeforeFirst()) { // no records are found
+                        System.out.println("No partial match title");
+                        return;
+                    } else {
+                        System.out.println(
+                            "|Call Num|Title|Book Category|Author|Rating|Available No. of Copy|"
+                        );
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int colNum = rsmd.getColumnCount();
+                        while (rs.next()) {
+                            System.out.print("|");
+                            for (int i = 1; i <= colNum; i++) {
+                                String fieldString = rs.getString(i);
+                                System.out.print(fieldString + "|");
+                            }
+                            System.out.println();
+                        }
+                        System.out.println("End of Query");
+                    }
+                } catch (Exception e) {
+                    System.out.println("[Error]: " + e.toString());
+                    return;
                 }
-                System.out.println("End of Query");
-              }
-            } catch (Exception e) {
-              System.out.println("[Error]: " + e.toString());
-              return;
-            }
-            break;
-          /* Search by aname */
-          case 3:
-            try {
-              Statement stmt = ConnectDatabase.getConn().createStatement();
-              ResultSet rs = stmt.executeQuery(
-                "SELECT B.callnum, B.title, BC.bcname, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), B.rating, COUNT(DISTINCT(C.copynum)) " +
-                "FROM book B, copy C, book_category BC, authorship A " +
-                "WHERE B.callnum = C.callnum AND B.bcid = BC.bcid AND B.callnum = A.callnum AND A.aname LIKE BINARY '%" +
-                keyword +
-                "%' " +
-                "GROUP BY B.callnum " +
-                "ORDER BY B.callnum ASC;"
-              );
-              if (!rs.isBeforeFirst()) {
-                System.out.println("No partial match author name");
-                return;
-              } else {
-                System.out.println(
-                  "|Call Num|Title|Book Category|Author|Rating|Available No. of Copy|"
-                );
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int colNum = rsmd.getColumnCount();
-                while (rs.next()) {
-                  System.out.print("|");
-                  for (int i = 1; i <= colNum; i++) {
-                    String fieldString = rs.getString(i);
-                    System.out.print(fieldString + "|");
-                  }
-                  System.out.println();
+                break;
+            /* Search by aname */
+            case 3:
+                try {
+                    Statement stmt = ConnectDatabase.getConn().createStatement();
+                    ResultSet rs = stmt.executeQuery(
+                        "SELECT B.callnum, B.title, BC.bcname, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), B.rating, COUNT(DISTINCT(C.copynum)) " +
+                        "FROM book B, copy C, book_category BC, authorship A " +
+                        "WHERE B.callnum = C.callnum AND B.bcid = BC.bcid AND B.callnum = A.callnum AND A.aname LIKE BINARY '%" +
+                        keyword +
+                        "%' " +
+                        "GROUP BY B.callnum " +
+                        "ORDER BY B.callnum ASC;"
+                    );
+                    if (!rs.isBeforeFirst()) { // no records are found
+                        System.out.println("No partial match author name");
+                        return;
+                    } else {
+                        System.out.println(
+                            "|Call Num|Title|Book Category|Author|Rating|Available No. of Copy|"
+                        );
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int colNum = rsmd.getColumnCount();
+                        while (rs.next()) {
+                            System.out.print("|");
+                            for (int i = 1; i <= colNum; i++) {
+                                String fieldString = rs.getString(i);
+                                System.out.print(fieldString + "|");
+                            }
+                            System.out.println();
+                        }
+                        System.out.println("End of Query");
+                    }
+                } catch (Exception e) {
+                    System.out.println("[Error]: " + e.toString());
+                    return;
                 }
-                System.out.println("End of Query");
-              }
-            } catch (Exception e) {
-              System.out.println("[Error]: " + e.toString());
-              return;
+                break;
+            default:
+                System.out.println("[Error]: Invalid input");
+                return;
             }
-            break;
-          default:
-            System.out.println("[Error]: Invalid input");
-            return;
-        }
-      }
+    }
 
     private void showLoanRecords() {
         Scanner scan = new Scanner(System.in);
         System.out.print("Enter The User ID: ");
         String userId = scan.nextLine();
         try {
-          Statement stmt = ConnectDatabase.getConn().createStatement();
-          ResultSet rs = stmt.executeQuery(
-            "SELECT BOR.callnum, BOR.copynum, B.title, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), BOR.checkout, " +
-            "CASE WHEN isNull(BOR.returndate) " +
-            "	THEN 'No' " +
-            "	ELSE 'Yes' " +
-            "END AS isreturned " +
-            "FROM book B, copy C, authorship A, libuser U, borrow BOR " +
-            "WHERE B.callnum = C.callnum AND B.callnum = A.callnum AND BOR.callnum = B.callnum AND U.libuid = BOR.libuid AND U.libuid = '" +
-            userId +
-            "' " +
-            "GROUP BY BOR.callnum " +
-            "ORDER BY BOR.checkout DESC;"
-          );
-          if (!rs.isBeforeFirst()) {
-            System.out.println("No loan record for this user");
-            return;
-          } else {
-            System.out.println("Loan Record:");
-            System.out.println(
-              "|CallNum|CopyNum|Title|Author|Chcek-out|Returned?|"
+            Statement stmt = ConnectDatabase.getConn().createStatement();
+            ResultSet rs = stmt.executeQuery(
+                "SELECT BOR.callnum, BOR.copynum, B.title, GROUP_CONCAT(DISTINCT A.aname SEPARATOR ', '), BOR.checkout, " +
+                "CASE WHEN isNull(BOR.returndate) " +
+                "	THEN 'No' " +
+                "	ELSE 'Yes' " +
+                "END AS isreturned " +
+                "FROM book B, copy C, authorship A, libuser U, borrow BOR " +
+                "WHERE B.callnum = C.callnum AND B.callnum = A.callnum AND BOR.callnum = B.callnum AND U.libuid = BOR.libuid AND U.libuid = '" +
+                userId +
+                "' " +
+                "GROUP BY BOR.callnum " +
+                "ORDER BY BOR.checkout DESC;"
             );
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int colNum = rsmd.getColumnCount();
-            while (rs.next()) {
-              System.out.print("|");
-              for (int i = 1; i <= colNum; i++) {
-                String fieldString = rs.getString(i);
-                System.out.print(fieldString + "|");
-              }
-              System.out.println();
+            if (!rs.isBeforeFirst()) { // no record are found
+                System.out.println("No loan record for this user");
+                return;
+            } else {
+                System.out.println("Loan Record:");
+                System.out.println(
+                "|CallNum|CopyNum|Title|Author|Chcek-out|Returned?|"
+                );
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int colNum = rsmd.getColumnCount();
+                while (rs.next()) {
+                    System.out.print("|");
+                    for (int i = 1; i <= colNum; i++) {
+                        String fieldString = rs.getString(i);
+                        System.out.print(fieldString + "|");
+                    }
+                    System.out.println();
+                }
+                System.out.println("End of Query");
             }
-            System.out.println("End of Query");
-          }
         } catch (Exception e) {
-          System.out.println("[Error]: " + e.toString());
-          return;
+            System.out.println("[Error]: " + e.toString());
+            return;
         }
-      }
+    }
 
     @Override
     public String toString(){
